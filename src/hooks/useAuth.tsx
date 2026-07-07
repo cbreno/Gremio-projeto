@@ -28,6 +28,8 @@ interface AuthContexto {
    * Revalida a senha do militar logado sem derrubar a sessão.
    */
   confirmarSenha: (senha: string) => Promise<boolean>;
+  /** Altera a senha do militar logado (usado na aba Perfil). */
+  alterarSenha: (novaSenha: string) => Promise<void>;
 }
 
 const Ctx = createContext<AuthContexto | undefined>(undefined);
@@ -141,6 +143,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return !error;
   }
 
+  async function alterarSenha(novaSenha: string) {
+    // O Supabase troca a senha do usuário autenticado (hash gerenciado).
+    const { error } = await supabase.auth.updateUser({ password: novaSenha });
+    if (error) throw new Error("Não foi possível alterar a senha. Tente novamente.");
+  }
+
   const valor: AuthContexto = {
     carregando,
     militar,
@@ -149,6 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     cadastrar,
     sair,
     confirmarSenha,
+    alterarSenha,
   };
 
   return <Ctx.Provider value={valor}>{children}</Ctx.Provider>;

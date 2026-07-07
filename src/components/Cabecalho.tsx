@@ -22,13 +22,22 @@ export function Cabecalho({ legenda }: { legenda?: string }) {
       <div className="flex-1">
         <DogTag posto={militar.posto} nomeGuerra={militar.nome_guerra} legenda={legenda} />
       </div>
-      <button
-        onClick={onSair}
-        className="shrink-0 rounded-xl border border-latao/40 bg-papel/80 px-3 font-titulo text-sm font-semibold text-oliva-escuro backdrop-blur-md active:scale-95"
-        aria-label="Sair"
-      >
-        Sair
-      </button>
+      <div className="flex shrink-0 flex-col gap-1">
+        <button
+          onClick={() => navigate("/perfil")}
+          className="rounded-xl border border-latao/40 bg-papel/80 px-3 py-1.5 font-titulo text-sm font-semibold text-oliva-escuro backdrop-blur-md active:scale-95"
+          aria-label="Perfil"
+        >
+          Perfil
+        </button>
+        <button
+          onClick={onSair}
+          className="rounded-xl border border-latao/40 bg-papel/80 px-3 py-1.5 font-titulo text-sm font-semibold text-oliva-escuro backdrop-blur-md active:scale-95"
+          aria-label="Sair"
+        >
+          Sair
+        </button>
+      </div>
     </header>
   );
 }

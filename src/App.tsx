@@ -10,6 +10,7 @@ import Carrinho from "./pages/Carrinho";
 import Checkout from "./pages/Checkout";
 import PagamentoPix from "./pages/PagamentoPix";
 import MeusPedidos from "./pages/MeusPedidos";
+import Perfil from "./pages/Perfil";
 import AdminProdutos from "./pages/admin/Produtos";
 import AdminPedidos from "./pages/admin/Pedidos";
 import AdminDevedores from "./pages/admin/Devedores";
@@ -67,6 +68,15 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <MeusPedidos />
+              </ProtectedRoute>
+            }
+          />
+          {/* Perfil: disponível para qualquer usuário autenticado (militar ou admin) */}
+          <Route
+            path="/perfil"
+            element={
+              <ProtectedRoute>
+                <Perfil />
               </ProtectedRoute>
             }
           />
