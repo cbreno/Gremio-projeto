@@ -3,6 +3,7 @@ import { GlassLayout } from "../../components/GlassLayout";
 import { Cabecalho } from "../../components/Cabecalho";
 import { AdminNav } from "../../components/AdminNav";
 import { StatusBadge } from "../../components/StatusBadge";
+import { Comprovante } from "../../components/Comprovante";
 import { supabase } from "../../lib/supabase/client";
 import { moeda, dataBR } from "../../lib/format";
 import type { PedidoComRelacionados, StatusPedido } from "../../types/db";
@@ -111,10 +112,8 @@ export default function AdminPedidos() {
               <span className="font-mono font-bold">{moeda(p.total)}</span>
             </div>
 
-            {/* Comprovante anexado (caminho no Storage) — apenas indicação */}
-            {p.comprovante_url && (
-              <p className="mt-1 font-mono text-xs text-oliva">✓ comprovante anexado</p>
-            )}
+            {/* Comprovante anexado pelo militar (imagem/PDF via signed URL) */}
+            {p.comprovante_url && <Comprovante caminho={p.comprovante_url} />}
 
             {p.status !== "pago" && (
               <button
