@@ -3,15 +3,15 @@ import { createClient } from "@supabase/supabase-js";
 const url = import.meta.env.VITE_SUPABASE_URL;
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!url || !anonKey) {
-  // Falha explícita e cedo se o .env não estiver configurado.
-  throw new Error(
-    "Configure VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no arquivo .env (veja .env.example).",
-  );
-}
+/**
+ * Indica se as variáveis do Supabase foram configuradas no build.
+ * Usado em main.tsx para mostrar uma tela de ajuda em vez de página em branco.
+ */
+export const supabaseConfigurado = Boolean(url && anonKey);
 
-// Cliente único usado em todo o app. persistSession mantém o login no celular.
-export const supabase = createClient(url, anonKey, {
+// Cria o cliente. Se faltar configuração, usa valores neutros só para não quebrar
+// o carregamento — o app exibirá a tela de "configuração pendente".
+export const supabase = createClient(url ?? "http://localhost", anonKey ?? "anon", {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
