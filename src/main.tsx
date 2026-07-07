@@ -24,6 +24,11 @@ function ConfiguracaoPendente() {
         <strong>Deployments → ⋯ → Redeploy</strong>. As variáveis precisam existir no
         momento do build.
       </p>
+      <p className="rounded-lg bg-latao/15 p-3 text-sm text-tinta/80">
+        Dica: cole a URL <strong>sem aspas</strong> e começando com{" "}
+        <span className="font-mono">https://</span> — ex.:{" "}
+        <span className="font-mono">https://xxxx.supabase.co</span>
+      </p>
     </div>
   );
 }
