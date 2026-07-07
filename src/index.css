@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply font-corpo text-tinta antialiased;
+    /* Fundo cor de lona como base caso a imagem do helicóptero não carregue */
+    background-color: theme("colors.lona");
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-titulo font-bold text-oliva-escuro;
+  }
+  /* Respeita a "notch"/safe-area do iPhone quando instalado como PWA */
+  #root {
+    min-height: 100dvh;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@layer components {
+  /* Superfície "papel" translúcida com vidro fosco — usada nos cards sobre o fundo */
+  .superficie {
+    @apply rounded-2xl border border-latao/30 bg-papel/85 shadow-sm backdrop-blur-md;
+  }
+
+  /* Botão principal (verde-oliva) */
+  .btn-primario {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-oliva px-4 py-3
+      font-titulo font-bold text-papel transition
+      active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primario:hover {
+    @apply bg-oliva-escuro;
+  }
+
+  /* Botão secundário/contorno */
+  .btn-secundario {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-oliva/40
+      bg-papel/70 px-4 py-3 font-titulo font-semibold text-oliva-escuro transition
+      active:scale-[0.98] disabled:opacity-50;
+  }
+
+  /* Campo de formulário padrão */
+  .campo {
+    @apply w-full rounded-xl border border-latao/40 bg-papel px-4 py-3 font-corpo text-tinta
+      outline-none transition placeholder:text-tinta/40
+      focus:border-oliva focus:ring-2 focus:ring-oliva/30;
+  }
+
+  .rotulo {
+    @apply mb-1 block font-titulo text-sm font-semibold text-oliva-escuro;
+  }
+}

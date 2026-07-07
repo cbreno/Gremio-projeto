@@ -1,0 +1,34 @@
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { DogTag } from "./DogTag";
+
+/**
+ * Cabeçalho padrão: chapa de identificação (posto + nome de guerra) + botão sair.
+ * Usado no topo das telas autenticadas.
+ */
+export function Cabecalho({ legenda }: { legenda?: string }) {
+  const { militar, sair } = useAuth();
+  const navigate = useNavigate();
+
+  if (!militar) return null;
+
+  async function onSair() {
+    await sair();
+    navigate("/login", { replace: true });
+  }
+
+  return (
+    <header className="mt-2 flex items-stretch gap-2">
+      <div className="flex-1">
+        <DogTag posto={militar.posto} nomeGuerra={militar.nome_guerra} legenda={legenda} />
+      </div>
+      <button
+        onClick={onSair}
+        className="shrink-0 rounded-xl border border-latao/40 bg-papel/80 px-3 font-titulo text-sm font-semibold text-oliva-escuro backdrop-blur-md active:scale-95"
+        aria-label="Sair"
+      >
+        Sair
+      </button>
+    </header>
+  );
+}
