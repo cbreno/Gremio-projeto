@@ -29,11 +29,12 @@ export default function Login() {
 
   return (
     <GlassLayout>
-      <div className="mt-6 text-center">
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-latao">
-          Cantina do Quartel
+      <div className="mt-8 text-center">
+        <p className="font-mono text-xs font-medium uppercase tracking-[0.35em] text-latao-claro">
+          ★ Cantina do Quartel ★
         </p>
-        <h1 className="mt-1 text-3xl text-papel drop-shadow">Cantina Tenente Breno</h1>
+        <h1 className="titulo-marca mt-2 text-4xl">Cantina Tenente Breno</h1>
+        <div className="mx-auto mt-3 h-1 w-16 rounded-full bg-latao-grad" />
       </div>
 
       <form onSubmit={onSubmit} className="superficie mt-6 space-y-4 p-6">

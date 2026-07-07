@@ -13,7 +13,7 @@ export default function Carrinho() {
     <GlassLayout>
       <Cabecalho />
 
-      <h2 className="mt-4 text-xl text-papel drop-shadow">Carrinho</h2>
+      <h2 className="titulo-marca mt-4 text-2xl">Carrinho</h2>
 
       {itens.length === 0 ? (
         <div className="superficie mt-4 p-6 text-center text-tinta/70">

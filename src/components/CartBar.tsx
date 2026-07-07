@@ -16,10 +16,10 @@ export function CartBar() {
     <div className="fixed inset-x-0 bottom-0 z-20 px-4 pb-[calc(env(safe-area-inset-bottom)+12px)] pt-2">
       <button
         onClick={() => navigate("/carrinho")}
-        className="mx-auto flex w-full max-w-md items-center justify-between rounded-2xl bg-oliva px-5 py-4 text-papel shadow-lg shadow-oliva-escuro/40 active:scale-[0.99]"
+        className="mx-auto flex w-full max-w-md items-center justify-between rounded-2xl bg-oliva-grad px-5 py-4 text-papel shadow-botao ring-1 ring-latao/40 active:scale-[0.99]"
       >
         <span className="flex items-center gap-2 font-titulo font-bold">
-          <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-latao px-1.5 font-mono text-sm">
+          <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-latao-grad px-1.5 font-mono text-sm text-oliva-escuro">
             {totalItens}
           </span>
           Ver carrinho

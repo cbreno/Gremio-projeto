@@ -45,7 +45,7 @@ export default function Cadastro() {
   return (
     <GlassLayout>
       <div className="mt-6 text-center">
-        <h1 className="text-2xl text-papel drop-shadow">Novo cadastro</h1>
+        <h1 className="titulo-marca text-3xl">Novo cadastro</h1>
       </div>
 
       <form onSubmit={onSubmit} className="superficie mt-4 space-y-4 p-6">

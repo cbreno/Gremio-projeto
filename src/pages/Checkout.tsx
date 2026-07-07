@@ -53,7 +53,7 @@ export default function Checkout() {
   return (
     <GlassLayout>
       <Cabecalho />
-      <h2 className="mt-4 text-xl text-papel drop-shadow">Finalizar compra</h2>
+      <h2 className="titulo-marca mt-4 text-2xl">Finalizar compra</h2>
 
       {/* Conferência dos itens */}
       <div className="superficie mt-4 divide-y divide-latao/20 p-4">

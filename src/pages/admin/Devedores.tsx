@@ -53,7 +53,7 @@ export default function AdminDevedores() {
 
       <div className="superficie mt-4 flex items-center justify-between p-4">
         <span className="font-titulo font-bold text-oliva-escuro">Total a receber</span>
-        <span className="font-mono text-xl font-bold text-red-700">
+        <span className="font-mono text-xl font-bold text-brasa">
           {moeda(totalDevido)}
         </span>
       </div>
@@ -80,7 +80,7 @@ export default function AdminDevedores() {
                   Vence {dataBR(p.vencimento)}
                 </p>
               </div>
-              <span className="font-mono text-lg font-bold text-red-700">
+              <span className="font-mono text-lg font-bold text-brasa">
                 {moeda(p.total)}
               </span>
             </div>

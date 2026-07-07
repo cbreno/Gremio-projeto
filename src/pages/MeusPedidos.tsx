@@ -33,7 +33,7 @@ export default function MeusPedidos() {
       <Cabecalho />
 
       <div className="mt-4 flex items-center justify-between">
-        <h2 className="text-xl text-papel drop-shadow">Meus pedidos</h2>
+        <h2 className="titulo-marca text-2xl">Meus pedidos</h2>
         <Link
           to="/"
           className="rounded-lg border border-latao/40 bg-papel/80 px-3 py-1.5 font-titulo text-sm font-semibold text-oliva-escuro backdrop-blur-md"
@@ -46,7 +46,7 @@ export default function MeusPedidos() {
       {totalAPagar > 0 && (
         <div className="superficie mt-4 flex items-center justify-between p-4">
           <span className="font-titulo font-bold text-oliva-escuro">Total a pagar</span>
-          <span className="font-mono text-xl font-bold text-red-700">
+          <span className="font-mono text-xl font-bold text-brasa">
             {moeda(totalAPagar)}
           </span>
         </div>

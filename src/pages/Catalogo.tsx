@@ -33,7 +33,7 @@ export default function Catalogo() {
       <Cabecalho legenda="Comprador" />
 
       <div className="mt-4 flex items-center justify-between">
-        <h2 className="text-xl text-papel drop-shadow">Cantina</h2>
+        <h2 className="titulo-marca text-2xl">Cantina</h2>
         <Link
           to="/meus-pedidos"
           className="rounded-lg border border-latao/40 bg-papel/80 px-3 py-1.5 font-titulo text-sm font-semibold text-oliva-escuro backdrop-blur-md"
