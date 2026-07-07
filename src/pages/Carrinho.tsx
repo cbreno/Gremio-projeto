@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { GlassLayout } from "../components/GlassLayout";
 import { Cabecalho } from "../components/Cabecalho";
 import { QtyStepper } from "../components/QtyStepper";
+import { ProdutoThumb } from "../components/ProdutoThumb";
 import { useCart } from "../hooks/useCart";
 import { moeda } from "../lib/format";
 
@@ -27,9 +28,12 @@ export default function Carrinho() {
           <div className="mt-4 space-y-3">
             {itens.map(({ produto, quantidade }) => (
               <div key={produto.id} className="superficie flex items-center gap-3 p-3">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-lona/70 text-2xl">
-                  {produto.icone}
-                </div>
+                <ProdutoThumb
+                  imagemUrl={produto.imagem_url}
+                  icone={produto.icone}
+                  nome={produto.nome}
+                  className="h-11 w-11 text-2xl"
+                />
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-titulo font-bold text-oliva-escuro">
                     {produto.nome}

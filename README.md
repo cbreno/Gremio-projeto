@@ -36,6 +36,7 @@ npm install
    2. `0002_functions.sql` — funções/gatilhos (unicidade, comprovante, coerência de status)
    3. `0003_rls.sql` — políticas de segurança (Row Level Security)
    4. `0004_storage.sql` — bucket `comprovantes` e suas políticas
+   5. `0005_produto_imagem.sql` — coluna de foto do produto + bucket `produtos`
 3. Rode também o seed de produtos: [`supabase/seed.sql`](supabase/seed.sql).
 4. **Authentication → Providers → Email:** mantenha o provedor **Email** habilitado e
    **DESABILITE "Confirm email"** (Authentication → Sign In / Providers). Isso é necessário

@@ -18,6 +18,8 @@ export interface Produto {
   nome: string;
   preco: number;
   icone: string;
+  /** URL pública da foto do produto (opcional; emoji `icone` é a reserva). */
+  imagem_url: string | null;
   ativo: boolean;
   created_at: string;
 }
