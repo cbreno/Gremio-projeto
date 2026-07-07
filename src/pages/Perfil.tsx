@@ -5,9 +5,10 @@ import { useAuth } from "../hooks/useAuth";
 import { apenasDigitos } from "../lib/format";
 
 export default function Perfil() {
-  const { militar, alterarSenha } = useAuth();
+  const { militar, alterarSenha, confirmarSenha } = useAuth();
 
   const [telefone, setTelefone] = useState("");
+  const [senhaAtual, setSenhaAtual] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
   const [confirmar, setConfirmar] = useState("");
   const [erro, setErro] = useState("");
@@ -37,9 +38,17 @@ export default function Perfil() {
 
     setEnviando(true);
     try {
+      // CONFIRMAÇÃO EXTRA: revalida a senha ATUAL antes de permitir a troca.
+      const senhaConfere = await confirmarSenha(senhaAtual);
+      if (!senhaConfere) {
+        setErro("A senha atual está incorreta.");
+        return;
+      }
+
       await alterarSenha(novaSenha);
       setOk(true);
       setTelefone("");
+      setSenhaAtual("");
       setNovaSenha("");
       setConfirmar("");
     } catch (err) {
@@ -74,8 +83,8 @@ export default function Perfil() {
       <form onSubmit={onSubmit} className="superficie mt-4 space-y-4 p-4">
         <h3 className="text-lg">Alterar senha</h3>
         <p className="-mt-2 text-sm text-tinta/70">
-          Para confirmar que é você, digite o <strong>telefone do seu cadastro</strong> e
-          defina a nova senha.
+          Para confirmar que é você, digite o <strong>telefone do seu cadastro</strong> e a
+          sua <strong>senha atual</strong>, depois defina a nova senha.
         </p>
 
         <div>
@@ -90,6 +99,22 @@ export default function Perfil() {
             placeholder="61 99999-0000"
             value={telefone}
             onChange={(e) => setTelefone(e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <label className="rotulo" htmlFor="atual">
+            Senha atual
+          </label>
+          <input
+            id="atual"
+            type="password"
+            className="campo"
+            autoComplete="current-password"
+            placeholder="Sua senha de hoje"
+            value={senhaAtual}
+            onChange={(e) => setSenhaAtual(e.target.value)}
             required
           />
         </div>
