@@ -12,7 +12,7 @@ export default function Carrinho() {
 
   return (
     <GlassLayout>
-      <Cabecalho />
+      <Cabecalho voltar />
 
       <h2 className="titulo-marca mt-4 text-2xl">Carrinho</h2>
 

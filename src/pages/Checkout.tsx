@@ -52,7 +52,7 @@ export default function Checkout() {
 
   return (
     <GlassLayout>
-      <Cabecalho />
+      <Cabecalho voltar />
       <h2 className="titulo-marca mt-4 text-2xl">Finalizar compra</h2>
 
       {/* Conferência dos itens */}

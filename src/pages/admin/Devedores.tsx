@@ -48,7 +48,7 @@ export default function AdminDevedores() {
 
   return (
     <GlassLayout>
-      <Cabecalho legenda="Administrador" />
+      <Cabecalho voltar legenda="Administrador" />
       <AdminNav />
 
       <div className="superficie mt-4 flex items-center justify-between p-4">

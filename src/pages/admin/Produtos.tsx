@@ -115,7 +115,7 @@ export default function AdminProdutos() {
 
   return (
     <GlassLayout>
-      <Cabecalho legenda="Administrador" />
+      <Cabecalho voltar legenda="Administrador" />
       <AdminNav />
 
       {/* Formulário de criar/editar */}

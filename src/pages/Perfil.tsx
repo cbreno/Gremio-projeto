@@ -60,7 +60,7 @@ export default function Perfil() {
 
   return (
     <GlassLayout>
-      <Cabecalho legenda={militar.role === "admin" ? "Administrador" : "Comprador"} />
+      <Cabecalho voltar legenda={militar.role === "admin" ? "Administrador" : "Comprador"} />
       <h2 className="titulo-marca mt-4 text-2xl">Meu perfil</h2>
 
       {/* Dados do cadastro (somente leitura) */}

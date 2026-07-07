@@ -30,7 +30,7 @@ export default function MeusPedidos() {
 
   return (
     <GlassLayout>
-      <Cabecalho />
+      <Cabecalho voltar />
 
       <div className="mt-4 flex items-center justify-between">
         <h2 className="titulo-marca text-2xl">Meus pedidos</h2>

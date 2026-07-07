@@ -97,7 +97,7 @@ export default function PagamentoPix() {
 
   return (
     <GlassLayout>
-      <Cabecalho />
+      <Cabecalho voltar />
       <h2 className="titulo-marca mt-4 text-2xl">Pagamento PIX</h2>
 
       <div className="superficie mt-4 space-y-4 p-5 text-center">
