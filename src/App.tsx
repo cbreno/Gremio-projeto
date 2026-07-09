@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
 import { CartProvider } from "./hooks/useCart";
+import { ToastProvider } from "./hooks/useToast";
+import { ConfirmProvider } from "./hooks/useConfirm";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 import Login from "./pages/Login";
@@ -14,6 +16,8 @@ import Perfil from "./pages/Perfil";
 import AdminProdutos from "./pages/admin/Produtos";
 import AdminPedidos from "./pages/admin/Pedidos";
 import AdminDevedores from "./pages/admin/Devedores";
+import AdminMilitares from "./pages/admin/Militares";
+import AdminLancar from "./pages/admin/Lancar";
 
 // Rota "/": redireciona conforme o papel logado (admin -> painel; militar -> catálogo).
 function Inicio() {
@@ -23,8 +27,10 @@ function Inicio() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
+    <ToastProvider>
+      <ConfirmProvider>
+      <AuthProvider>
+        <CartProvider>
         <Routes>
           {/* Públicas */}
           <Route path="/login" element={<Login />} />
@@ -106,10 +112,28 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin/militares"
+            element={
+              <ProtectedRoute requerAdmin>
+                <AdminMilitares />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/lancar"
+            element={
+              <ProtectedRoute requerAdmin>
+                <AdminLancar />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </CartProvider>
-    </AuthProvider>
+        </CartProvider>
+      </AuthProvider>
+      </ConfirmProvider>
+    </ToastProvider>
   );
 }

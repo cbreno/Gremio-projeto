@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
-// PWA "Cantina Tenente Breno" — instalável (Adicionar à Tela de Início) no iOS/Android.
+// PWA "Grêmio Tenente Breno" — instalável (Adicionar à Tela de Início) no iOS/Android.
 export default defineConfig({
   plugins: [
     react(),
@@ -10,9 +10,9 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["helicoptero.jpg", "icons/apple-touch-icon.png"],
       manifest: {
-        name: "Cantina Tenente Breno",
-        short_name: "Cantina TB",
-        description: "Vendas da cantina do quartel — compre pelo celular.",
+        name: "Grêmio Tenente Breno",
+        short_name: "Grêmio TB",
+        description: "Vendas do grêmio do quartel — compre pelo celular.",
         lang: "pt-BR",
         theme_color: "#353B25",
         background_color: "#E4DECF",

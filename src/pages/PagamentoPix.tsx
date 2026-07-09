@@ -6,6 +6,7 @@ import { QRCodePix } from "../components/QRCodePix";
 import { useAuth } from "../hooks/useAuth";
 import { supabase } from "../lib/supabase/client";
 import { pixDoQuartel } from "../lib/pix";
+import { comprimirImagem } from "../lib/imagem";
 import { moeda } from "../lib/format";
 import type { Pedido } from "../types/db";
 
@@ -72,12 +73,14 @@ export default function PagamentoPix() {
     setEnviandoComp(true);
     setMsgComp("");
     try {
-      const ext = arquivo.name.split(".").pop() || "jpg";
+      // Comprime se for imagem (PDF passa intacto).
+      const enviar = await comprimirImagem(arquivo);
+      const ext = enviar.name.split(".").pop() || "jpg";
       // Caminho: <uid>/<pedidoId>.<ext> — a 1ª pasta (uid) é usada pela política do Storage.
       const caminho = `${militar.id}/${pedido.id}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from("comprovantes")
-        .upload(caminho, arquivo, { upsert: true });
+        .upload(caminho, enviar, { upsert: true, contentType: enviar.type });
       if (upErr) throw upErr;
 
       // RPC que grava a URL sem permitir alterar o status (ver 0002_functions.sql).

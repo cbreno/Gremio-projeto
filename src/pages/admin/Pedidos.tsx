@@ -2,8 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 import { GlassLayout } from "../../components/GlassLayout";
 import { Cabecalho } from "../../components/Cabecalho";
 import { AdminNav } from "../../components/AdminNav";
+import { ResumoCards } from "../../components/ResumoCards";
 import { StatusBadge } from "../../components/StatusBadge";
 import { Comprovante } from "../../components/Comprovante";
+import { useConfirm } from "../../hooks/useConfirm";
+import { useToast } from "../../hooks/useToast";
 import { supabase } from "../../lib/supabase/client";
 import { moeda, dataBR } from "../../lib/format";
 import type { PedidoComRelacionados, StatusPedido } from "../../types/db";
@@ -17,6 +20,8 @@ const FILTROS: { valor: Filtro; rotulo: string }[] = [
 ];
 
 export default function AdminPedidos() {
+  const confirmar = useConfirm();
+  const toast = useToast();
   const [pedidos, setPedidos] = useState<PedidoComRelacionados[]>([]);
   const [filtro, setFiltro] = useState<Filtro>("todos");
   const [carregando, setCarregando] = useState(true);
@@ -33,12 +38,41 @@ export default function AdminPedidos() {
 
   useEffect(() => {
     carregar();
+
+    // REALTIME: recarrega a lista quando qualquer pedido é criado/alterado.
+    // Ótimo em dias movimentados — o admin vê o pedido novo aparecer sozinho.
+    const canal = supabase
+      .channel("pedidos-admin")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "pedidos" },
+        () => carregar(),
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(canal);
+    };
   }, [carregar]);
 
   // Confirmar recebimento: PIX 'aguardando' -> 'pago'; a prazo 'pendente' -> 'pago'.
-  async function marcarPago(id: string) {
-    await supabase.from("pedidos").update({ status: "pago" }).eq("id", id);
-    carregar();
+  async function marcarPago(p: PedidoComRelacionados) {
+    const ok = await confirmar({
+      titulo: p.forma_pagamento === "pix" ? "Confirmar recebimento?" : "Marcar como pago?",
+      mensagem: `${p.militares?.posto ?? ""} ${p.militares?.nome_guerra ?? ""} — este pedido será marcado como PAGO. Esta ação não pode ser desfeita.`,
+      textoConfirmar: "Sim, marcar pago",
+    });
+    if (!ok) return;
+
+    const { error } = await supabase
+      .from("pedidos")
+      .update({ status: "pago", pago_em: new Date().toISOString() })
+      .eq("id", p.id);
+    if (error) toast.erro("Não foi possível atualizar o pedido.");
+    else {
+      toast.sucesso("Pedido marcado como pago ✓");
+      carregar();
+    }
   }
 
   const filtrados =
@@ -48,6 +82,9 @@ export default function AdminPedidos() {
     <GlassLayout>
       <Cabecalho legenda="Administrador" />
       <AdminNav />
+
+      {/* Dashboard de resumo */}
+      <ResumoCards pedidos={pedidos} />
 
       {/* Filtro por status */}
       <div className="mt-4 flex gap-1 overflow-x-auto">
@@ -117,7 +154,7 @@ export default function AdminPedidos() {
 
             {p.status !== "pago" && (
               <button
-                onClick={() => marcarPago(p.id)}
+                onClick={() => marcarPago(p)}
                 className="btn-primario mt-3 w-full"
               >
                 {p.forma_pagamento === "pix"

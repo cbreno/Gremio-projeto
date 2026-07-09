@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { GlassLayout } from "../../components/GlassLayout";
 import { Cabecalho } from "../../components/Cabecalho";
 import { AdminNav } from "../../components/AdminNav";
+import { useConfirm } from "../../hooks/useConfirm";
+import { useToast } from "../../hooks/useToast";
 import { supabase } from "../../lib/supabase/client";
 import { moeda, dataBR, apenasDigitos } from "../../lib/format";
 import type { PedidoComRelacionados } from "../../types/db";
@@ -12,7 +14,7 @@ function linkCobranca(p: PedidoComRelacionados): string {
   if (fone.length <= 11) fone = "55" + fone; // prefixo Brasil se ausente
   const texto =
     `Bom dia, ${p.militares?.posto ?? ""} ${p.militares?.nome_guerra ?? ""}! ` +
-    `Passando para lembrar da pendência na Cantina Tenente Breno no valor de ${moeda(
+    `Passando para lembrar da pendência no Grêmio Tenente Breno no valor de ${moeda(
       Number(p.total),
     )}, com vencimento em ${dataBR(p.vencimento)}. ` +
     `Pode acertar via PIX quando puder. Obrigado!`;
@@ -20,6 +22,8 @@ function linkCobranca(p: PedidoComRelacionados): string {
 }
 
 export default function AdminDevedores() {
+  const confirmar = useConfirm();
+  const toast = useToast();
   const [devedores, setDevedores] = useState<PedidoComRelacionados[]>([]);
   const [carregando, setCarregando] = useState(true);
 
@@ -39,9 +43,23 @@ export default function AdminDevedores() {
     carregar();
   }, [carregar]);
 
-  async function marcarPago(id: string) {
-    await supabase.from("pedidos").update({ status: "pago" }).eq("id", id);
-    carregar();
+  async function marcarPago(p: PedidoComRelacionados) {
+    const ok = await confirmar({
+      titulo: "Confirmar pagamento?",
+      mensagem: `Marcar a dívida de ${p.militares?.posto ?? ""} ${p.militares?.nome_guerra ?? ""} (${moeda(Number(p.total))}) como PAGA. Esta ação não pode ser desfeita.`,
+      textoConfirmar: "Sim, marcar pago",
+    });
+    if (!ok) return;
+
+    const { error } = await supabase
+      .from("pedidos")
+      .update({ status: "pago", pago_em: new Date().toISOString() })
+      .eq("id", p.id);
+    if (error) toast.erro("Não foi possível atualizar.");
+    else {
+      toast.sucesso("Dívida quitada ✓");
+      carregar();
+    }
   }
 
   const totalDevido = devedores.reduce((s, p) => s + Number(p.total), 0);
@@ -95,7 +113,7 @@ export default function AdminDevedores() {
               >
                 Cobrar no WhatsApp
               </a>
-              <button onClick={() => marcarPago(p.id)} className="btn-primario flex-1">
+              <button onClick={() => marcarPago(p)} className="btn-primario flex-1">
                 Marcar pago
               </button>
             </div>

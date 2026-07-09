@@ -16,13 +16,26 @@ export async function criarPedido(
   militarId: string,
   itens: ItemCarrinho[],
   forma: FormaPagamento,
+  opts: { pago?: boolean } = {},
 ): Promise<string> {
   if (itens.length === 0) throw new Error("Carrinho vazio.");
 
   const total = itens.reduce((s, i) => s + i.produto.preco * i.quantidade, 0);
 
-  const status = forma === "pix" ? "aguardando" : "pendente";
-  const vencimento = forma === "prazo" ? primeiroDiaUtilMesSeguinte() : null;
+  // `pago` é usado no lançamento pelo admin (venda à vista já quitada).
+  let status: "aguardando" | "pendente" | "pago";
+  let vencimento: string | null = null;
+  let pago_em: string | null = null;
+
+  if (opts.pago) {
+    status = "pago";
+    pago_em = new Date().toISOString();
+  } else if (forma === "pix") {
+    status = "aguardando";
+  } else {
+    status = "pendente";
+    vencimento = primeiroDiaUtilMesSeguinte();
+  }
 
   // 1) Cria o pedido.
   const { data: pedido, error: pedErr } = await supabase
@@ -33,6 +46,7 @@ export async function criarPedido(
       forma_pagamento: forma,
       status,
       vencimento,
+      pago_em,
     })
     .select("id")
     .single();

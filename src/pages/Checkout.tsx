@@ -4,6 +4,7 @@ import { GlassLayout } from "../components/GlassLayout";
 import { Cabecalho } from "../components/Cabecalho";
 import { useAuth } from "../hooks/useAuth";
 import { useCart } from "../hooks/useCart";
+import { useToast } from "../hooks/useToast";
 import { criarPedido } from "../lib/pedidos";
 import { primeiroDiaUtilMesSeguinte } from "../lib/vencimento";
 import { moeda, dataBR } from "../lib/format";
@@ -12,6 +13,7 @@ import type { FormaPagamento } from "../types/db";
 export default function Checkout() {
   const { militar, confirmarSenha } = useAuth();
   const { itens, total, limpar } = useCart();
+  const toast = useToast();
   const navigate = useNavigate();
 
   const [forma, setForma] = useState<FormaPagamento>("pix");
@@ -41,8 +43,12 @@ export default function Checkout() {
       limpar();
 
       // PIX -> tela de pagamento; a prazo -> meus pedidos (dívida registrada).
-      if (forma === "pix") navigate(`/pedido/${pedidoId}/pix`, { replace: true });
-      else navigate("/meus-pedidos", { replace: true });
+      if (forma === "pix") {
+        navigate(`/pedido/${pedidoId}/pix`, { replace: true });
+      } else {
+        toast.sucesso("Compra registrada a prazo ✓");
+        navigate("/meus-pedidos", { replace: true });
+      }
     } catch (err) {
       setErro(err instanceof Error ? err.message : "Falha ao finalizar.");
     } finally {

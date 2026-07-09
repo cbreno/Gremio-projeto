@@ -4,13 +4,18 @@ import { Cabecalho } from "../../components/Cabecalho";
 import { AdminNav } from "../../components/AdminNav";
 import { StatusBadge } from "../../components/StatusBadge";
 import { ProdutoThumb } from "../../components/ProdutoThumb";
+import { useConfirm } from "../../hooks/useConfirm";
+import { useToast } from "../../hooks/useToast";
 import { supabase } from "../../lib/supabase/client";
+import { comprimirImagem } from "../../lib/imagem";
 import { moeda } from "../../lib/format";
 import type { Produto } from "../../types/db";
 
 const VAZIO = { nome: "", preco: "", icone: "📦", imagem_url: null as string | null };
 
 export default function AdminProdutos() {
+  const confirmar = useConfirm();
+  const toast = useToast();
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [editandoId, setEditandoId] = useState<string | null>(null);
@@ -60,11 +65,13 @@ export default function AdminProdutos() {
 
   // Sobe a foto para o bucket público 'produtos' e devolve a URL pública.
   async function enviarFoto(f: File): Promise<string> {
-    const ext = f.name.split(".").pop() || "jpg";
+    // Comprime antes de subir (foto de celular pesa vários MB).
+    const comprimida = await comprimirImagem(f);
+    const ext = comprimida.name.split(".").pop() || "jpg";
     const caminho = `${crypto.randomUUID()}.${ext}`;
-    const { error } = await supabase.storage.from("produtos").upload(caminho, f, {
+    const { error } = await supabase.storage.from("produtos").upload(caminho, comprimida, {
       upsert: true,
-      contentType: f.type,
+      contentType: comprimida.type,
     });
     if (error) throw error;
     return supabase.storage.from("produtos").getPublicUrl(caminho).data.publicUrl;
@@ -94,6 +101,7 @@ export default function AdminProdutos() {
 
       if (resp.error) setErro("Não foi possível salvar o produto.");
       else {
+        toast.sucesso(editandoId ? "Produto atualizado ✓" : "Produto adicionado ✓");
         cancelar();
         carregar();
       }
@@ -106,8 +114,51 @@ export default function AdminProdutos() {
 
   // Ativar/inativar: produto inativo não aparece no catálogo do militar.
   async function alternarAtivo(p: Produto) {
-    await supabase.from("produtos").update({ ativo: !p.ativo }).eq("id", p.id);
-    carregar();
+    // Só pede confirmação ao INATIVAR (some do catálogo); ativar é seguro.
+    if (p.ativo) {
+      const ok = await confirmar({
+        titulo: "Inativar produto?",
+        mensagem: `"${p.nome}" deixará de aparecer no catálogo dos militares. Você pode reativar depois.`,
+        textoConfirmar: "Inativar",
+        perigoso: true,
+      });
+      if (!ok) return;
+    }
+    const { error } = await supabase.from("produtos").update({ ativo: !p.ativo }).eq("id", p.id);
+    if (error) toast.erro("Não foi possível alterar o produto.");
+    else {
+      toast.sucesso(p.ativo ? "Produto inativado" : "Produto ativado ✓");
+      carregar();
+    }
+  }
+
+  // Excluir produto permanentemente. Pedidos antigos não são afetados (guardam
+  // snapshot do nome/preço; o vínculo vira nulo por ON DELETE SET NULL).
+  async function excluirProduto(p: Produto) {
+    const ok = await confirmar({
+      titulo: "Excluir produto?",
+      mensagem: `"${p.nome}" será removido permanentemente. Pedidos antigos que continham este item não são afetados. Se quiser apenas escondê-lo do catálogo, use "Inativar".`,
+      textoConfirmar: "Excluir",
+      perigoso: true,
+    });
+    if (!ok) return;
+
+    // Remove também a foto do Storage, se houver (evita arquivo órfão).
+    if (p.imagem_url) {
+      const marcador = "/produtos/";
+      const idx = p.imagem_url.indexOf(marcador);
+      if (idx !== -1) {
+        await supabase.storage.from("produtos").remove([p.imagem_url.slice(idx + marcador.length)]);
+      }
+    }
+
+    const { error } = await supabase.from("produtos").delete().eq("id", p.id);
+    if (error) toast.erro("Não foi possível excluir o produto.");
+    else {
+      toast.sucesso("Produto excluído");
+      if (editandoId === p.id) cancelar(); // fecha o formulário se estava editando este
+      carregar();
+    }
   }
 
   // O que mostrar na prévia: foto nova escolhida > foto já salva > emoji.
@@ -148,7 +199,14 @@ export default function AdminProdutos() {
             {previewUrl && (
               <button
                 type="button"
-                onClick={() => {
+                onClick={async () => {
+                  const ok = await confirmar({
+                    titulo: "Remover foto?",
+                    mensagem: "O produto voltará a usar o emoji como imagem.",
+                    textoConfirmar: "Remover",
+                    perigoso: true,
+                  });
+                  if (!ok) return;
                   setArquivo(null);
                   setPreview(null);
                   setForm({ ...form, imagem_url: null });
@@ -235,6 +293,12 @@ export default function AdminProdutos() {
                 className="rounded-lg border border-latao/40 px-3 py-1 font-titulo text-xs font-semibold text-oliva-escuro"
               >
                 {p.ativo ? "Inativar" : "Ativar"}
+              </button>
+              <button
+                onClick={() => excluirProduto(p)}
+                className="rounded-lg border border-brasa/50 px-3 py-1 font-titulo text-xs font-semibold text-brasa"
+              >
+                Excluir
               </button>
             </div>
           </div>

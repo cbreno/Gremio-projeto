@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "PWA de vendas da Cantina Tenente Breno (cantina de quartel).",
+  "description": "PWA de vendas do Grêmio Tenente Breno (grêmio de quartel).",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

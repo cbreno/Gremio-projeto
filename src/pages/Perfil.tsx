@@ -2,10 +2,12 @@ import { useState, type FormEvent } from "react";
 import { GlassLayout } from "../components/GlassLayout";
 import { Cabecalho } from "../components/Cabecalho";
 import { useAuth } from "../hooks/useAuth";
+import { useToast } from "../hooks/useToast";
 import { apenasDigitos } from "../lib/format";
 
 export default function Perfil() {
   const { militar, alterarSenha, confirmarSenha } = useAuth();
+  const toast = useToast();
 
   const [telefone, setTelefone] = useState("");
   const [senhaAtual, setSenhaAtual] = useState("");
@@ -47,6 +49,7 @@ export default function Perfil() {
 
       await alterarSenha(novaSenha);
       setOk(true);
+      toast.sucesso("Senha alterada com sucesso ✓");
       setTelefone("");
       setSenhaAtual("");
       setNovaSenha("");

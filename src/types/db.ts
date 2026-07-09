@@ -32,6 +32,8 @@ export interface Pedido {
   status: StatusPedido;
   vencimento: string | null;
   comprovante_url: string | null;
+  /** Momento em que o admin marcou como pago (para relatórios). */
+  pago_em: string | null;
   created_at: string;
 }
 

@@ -1,6 +1,6 @@
-# Cantina Tenente Breno 🪖
+# Grêmio Tenente Breno 🪖
 
-Sistema web (PWA) de vendas da cantina de um quartel. Militares compram produtos
+Sistema web (PWA) de vendas do grêmio de um quartel. Militares compram produtos
 pelo celular; o administrador gerencia produtos, pedidos e cobranças. Mobile-first
 e instalável na tela de início (iOS/Android).
 
@@ -37,6 +37,8 @@ npm install
    3. `0003_rls.sql` — políticas de segurança (Row Level Security)
    4. `0004_storage.sql` — bucket `comprovantes` e suas políticas
    5. `0005_produto_imagem.sql` — coluna de foto do produto + bucket `produtos`
+   6. `0006_admin.sql` — `pago_em` (relatórios), Realtime de pedidos e reset de senha pelo admin
+   7. `0007_admin_lancar.sql` — permite o admin lançar pedido atribuído a outro militar
 3. Rode também o seed de produtos: [`supabase/seed.sql`](supabase/seed.sql).
 4. **Authentication → Providers → Email:** mantenha o provedor **Email** habilitado e
    **DESABILITE "Confirm email"** (Authentication → Sign In / Providers). Isso é necessário
